@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, useContext } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+import StickyNavbar from "./components/StickyNavbar";
+import Login from "./pages/registration/Login";
+import SignUp from "./pages/registration/SignUp"
+import UserProfile from "./pages/user/UserProfile";
+
 
 function App() {
+  const [hideRouter1, setHideRouterUser] = useState(false);
+
+
+
+  const AppRouter1 = () => {
+    return (
+      <Router>
+        <StickyNavbar/>
+        <Routes>
+          <Route index element={<Home />} />    
+          <Route path="/login" element={<Login />} />    
+          <Route path="/UserProfile" element={<UserProfile />} />    
+          <Route path="/Signup/:type" element={<SignUp />} />    
+        </Routes>
+      </Router>
+    );
+  };
+
+
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   <>
+        {hideRouter1 ? null : (
+        <>
+          <AppRouter1 />
+        </>
+      )}
+   </>
   );
 }
 
