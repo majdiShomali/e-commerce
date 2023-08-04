@@ -4,10 +4,12 @@ const PORT = process.env.PORT;
 const mongoose = require("mongoose");
 const userRouts = require('./routes/userRouter');
 const GoogleLogInRouts = require('./routes/GoogleLogInRouter');
+const itemRouts = require('./routes/itemRouter');
 const notFoundHandler = require('./middleware/404');
-const dbURI = "mongodb+srv://majdishomali1997:uVxsL6cXyv6CIZv8@cluster0.pacgw6a.mongodb.net/authentication"
+const dbURI = "mongodb+srv://majdishomali1997:uVxsL6cXyv6CIZv8@cluster0.pacgw6a.mongodb.net/ecommerce"
 const errorHandler = require('./middleware/500')
 const Protected = require('./middleware/Protected')
+const forgetRouts = require('./routes/forgetRouter');
 
 const app = express();
 app.use(cors());
@@ -24,6 +26,8 @@ app.get("/", (req, res) => {
 
 app.use(userRouts);
 app.use(GoogleLogInRouts);
+app.use(itemRouts);
+app.use(forgetRouts);
 app.use('*',notFoundHandler);
 app.use(errorHandler);
 app.use(Protected)

@@ -35,7 +35,7 @@ export default function LogIn() {
               localStorage.setItem("auth", response.data.token);
               window.location.href = "http://localhost:3000/";
             })
-            .catch((err) => console.log(err.message));
+            .catch((err) => setpasswordp(err.response.data.message));
         })
         .catch((err) => console.log(err.message));
     }
@@ -158,6 +158,8 @@ export default function LogIn() {
                     </svg>
                     <span className="ml-3">Sign-In</span>
                   </button>
+                  <Link to="/ForgetPassword" className="text-blue-500">forget password ?</Link>
+
                   <p className="mt-6 text-xs text-gray-600 text-center">
                     No Account?
                     <Link

@@ -1,18 +1,57 @@
 import React from "react";
-
+import { useState,useEffect,useContext } from "react";
+import { CartContext } from "../../context/cartContext";
+import axios from "axios";
 const Card3 = () => {
-  const array = [1, 2, 3];
+  const [items,setItems] = useState([])
+  const [allItems,setItemsAllItems] = useState([])
+const {cartNavRefresh,setCartNavRefresh} =useContext(CartContext)
+ 
+
+  const getAll = async() =>{
+try {
+  const response = await axios.get('http://localhost:5000/api/allItems')
+  setItemsAllItems(response.data)
+} catch (error) {
+  console.log(error.message)
+}
+
+  }
+
+  useEffect(() => {
+    getAll()
+    const storedItems = localStorage.getItem('items');
+    if (storedItems) {
+      setItems(JSON.parse(storedItems));
+    }
+  }, []);
+
+
+  const handleAddToCart = (card) => {
+    const allCards = [...(Array.isArray(items) ? items : []),card]; 
+    setItems(allCards);
+    setCartNavRefresh(allCards)
+  localStorage.setItem('items', JSON.stringify(allCards))  
+
+  };
+
   return (
     <>
-      <div className="w-screen flex flex-wrap justify-center">
-        {array.map(() => {
+    <div>
+      <div className="flex justify-center my-5">
+      <p className="text-2xl">all produncts</p>
+      </div>
+
+    <div className="w-full flex flex-wrap gap-3 justify-center  h-[90vh]">   
+        {allItems?.map((card,index) => {
           return (
-            <div className=" flex flex-col items-center justify-center mx-2">
+            <div key={card._id}
+             className=" flex flex-col items-center justify-center mx-2 h-96 w-72 mb-5">
               <div className="container">
-                <div className="max-w-md w-full bg-gray-900 shadow-lg rounded-xl p-6">
+                <div className=" w-full bg-gray-900  rounded-xl p-6">
                   <div className="flex flex-col ">
                     <div className="">
-                      <div className="relative h-62 w-full mb-3">
+                      <div className="relative h-56 w-full mb-3">
                         <div className="absolute flex flex-col top-0 right-0 p-3">
                           <button className="transition ease-in duration-300 bg-gray-800  hover:text-purple-500 shadow hover:shadow-md text-gray-500 rounded-full w-8 h-8 text-center p-1">
                             <svg
@@ -32,9 +71,9 @@ const Card3 = () => {
                           </button>
                         </div>
                         <img
-                          src="https://images.unsplash.com/photo-1577982787983-e07c6730f2d3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2059&q=80"
+                          src={`http://localhost:5000/${card.image}`}
                           alt="Just a flower"
-                          className=" w-full   object-fill  rounded-2xl"
+                          className=" w-full  h-full  object-fill  rounded-2xl"
                         />
                       </div>
                       <div className="flex-auto justify-evenly">
@@ -55,8 +94,7 @@ const Card3 = () => {
                           </div>
                           <div className="flex items-center w-full justify-between min-w-0 ">
                             <h2 className="text-lg mr-auto cursor-pointer text-gray-200 hover:text-purple-500 truncate ">
-                              Lorem ipsum is placeholder text commonly used in
-                              the graphic
+                              {card.Name}
                             </h2>
                             <div className="flex items-center bg-green-400 text-white text-xs px-2 py-1 ml-3 rounded-lg">
                               INSTOCK
@@ -64,9 +102,9 @@ const Card3 = () => {
                           </div>
                         </div>
                         <div className="text-xl text-white font-semibold mt-1">
-                          $240.00
+                          {card.price} $
                         </div>
-                        <div className="lg:flex  py-4  text-sm text-gray-600">
+                        {/* <div className="lg:flex  py-4  text-sm text-gray-600">
                           <div className="flex-1 inline-flex items-center  mb-3">
                             <div className="w-full flex-none text-sm flex items-center text-gray-600">
                               <ul className="flex flex-row justify-center items-center space-x-2">
@@ -124,9 +162,12 @@ const Card3 = () => {
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <div className="flex space-x-2 text-sm font-medium justify-start">
-                          <button className="transition ease-in duration-300 inline-flex items-center text-sm font-medium mb-2 md:mb-0 bg-purple-500 px-5 py-2 hover:shadow-lg tracking-wider text-white rounded-full hover:bg-purple-600 ">
+                          <button
+                            onClick={() => handleAddToCart(card)}
+                            className="transition ease-in duration-300 inline-flex items-center text-sm font-medium mb-2 md:mb-0 bg-purple-500 px-5 py-2 hover:shadow-lg tracking-wider text-white rounded-full hover:bg-purple-600 "
+                          >
                             <span>Add Cart</span>
                           </button>
                           <button className="transition ease-in duration-300 bg-gray-700 hover:bg-gray-800 border hover:border-gray-500 border-gray-700 hover:text-white  hover:shadow-lg text-gray-400 rounded-full w-9 h-9 text-center p-2">
@@ -161,6 +202,11 @@ const Card3 = () => {
           );
         })}
       </div>
+
+
+
+    </div>
+     
     </>
   );
 };

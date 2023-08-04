@@ -27,7 +27,7 @@ const newUserGoogle = async (req, res) => {
     const validpassword = await bcrypt.compare(id, userExist[0].password);
 
     if (!validpassword) {
-      return res.json({ error: "incorrect password" });
+      return res.status(500).json({ message: "incorrect password" });
     }
 
     if (validpassword) {

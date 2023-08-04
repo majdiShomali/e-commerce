@@ -19,17 +19,34 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Link, useNavigate } from "react-router-dom";
- 
+
+import Icon from "@mdi/react";
+import { mdiCartOutline } from "@mdi/js";
+import { mdiCartArrowDown } from "@mdi/js";
+import { CartContext } from "../context/cartContext";
+import { useState, useEffect, useContext } from "react";
+
 export default function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
- 
+  const [items, setItems] = useState([]);
+  const [itemsStat, setItemsStat] = useState(false);
+  const { cartNavRefresh, setCartNavRefresh } = useContext(CartContext);
+
+  useEffect(() => {
+    setItems(cartNavRefresh);
+    setTimeout(() => {
+      setItemsStat(true);
+    }, 2000);
+    setItemsStat(false);
+  }, [cartNavRefresh]);
+
   React.useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
- 
+
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
@@ -38,7 +55,11 @@ export default function StickyNavbar() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <Link onClick={()=>setOpenNav(false)} to="/" className="flex items-center">
+        <Link
+          onClick={() => setOpenNav(false)}
+          to="/"
+          className="flex items-center"
+        >
           Pages
         </Link>
       </Typography>
@@ -48,7 +69,11 @@ export default function StickyNavbar() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <Link onClick={()=>setOpenNav(false)} to="/" className="flex items-center">
+        <Link
+          onClick={() => setOpenNav(false)}
+          to="/"
+          className="flex items-center"
+        >
           Account
         </Link>
       </Typography>
@@ -58,7 +83,11 @@ export default function StickyNavbar() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <Link onClick={()=>setOpenNav(false)} to="/" className="flex items-center">
+        <Link
+          onClick={() => setOpenNav(false)}
+          to="/"
+          className="flex items-center"
+        >
           Blocks
         </Link>
       </Typography>
@@ -68,14 +97,16 @@ export default function StickyNavbar() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <Link  onClick={()=>setOpenNav(false)} to="/" className="flex items-center">
+        <Link
+          onClick={() => setOpenNav(false)}
+          to="/"
+          className="flex items-center"
+        >
           Docs
         </Link>
       </Typography>
     </ul>
   );
-
-
 
   const profileMenuItems = [
     {
@@ -90,7 +121,7 @@ export default function StickyNavbar() {
 
   function ProfileMenu() {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const navigate =useNavigate()
+    const navigate = useNavigate();
     const closeMenu = (label) => {
       setIsMenuOpen(false);
       if (label == "Sign Out") {
@@ -98,12 +129,12 @@ export default function StickyNavbar() {
         window.location.href = "http://localhost:3000/";
         console.log(label);
       } else if (label == "Profile") {
-        navigate("/UserProfile")        
+        navigate("/UserProfile");
       }
     };
 
     return (
-      <Menu  open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end"  >
+      <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
         <MenuHandler>
           <Button
             variant="text"
@@ -166,95 +197,106 @@ export default function StickyNavbar() {
     );
   }
 
-
- 
   return (
-      
-      <Navbar className="max-h-[768px] max-w-[100%] w-[100%]  px-10 sticky top-0 z-10">
-        <div className="flex items-center justify-between text-blue-gray-900">
-          <Link to="/">
-          <Typography
-            className="mr-4 cursor-pointer py-1.5 font-medium"
-          >
+    <Navbar className="max-h-[768px] max-w-[100%] w-[100%]  px-10 sticky top-0 z-10">
+      <div className="flex items-center justify-between text-blue-gray-900">
+        <Link to="/">
+          <Typography className="mr-4 cursor-pointer py-1.5 font-medium">
             Material Tailwind
           </Typography>
-          </Link>
-          <div className="mr-4 hidden lg:block">{navList}</div>
+        </Link>
+        <div className="mr-4 hidden lg:block">{navList}</div>
 
-          <div className="flex items-center gap-4">
- 
-            { localStorage.auth !== undefined ?
-            
-            <>
-            <ProfileMenu />
-                    
-            </>
-            
-            :
-            <>
-            
-            <Link to="login">
-             <Button
-              variant="gradient"
-              size="sm"
-              className="hidden lg:inline-block"
-            >
-              <span>login</span>
-            </Button>
-            </Link>
-            
-            
-            </>
-            
-            
-            }
-            <IconButton
-              variant="text"
-              className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-              ripple={false}
-              onClick={() => setOpenNav(!openNav)}
-            >
-              {openNav ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  className="h-6 w-6"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+        <div className="flex items-center gap-4">
+          <>
+            <Link to="/CartPage">
+              {itemsStat ? (
+                <div className="relative p-1">
+                  <Icon path={mdiCartOutline} size={1.5} className="mr-2" />
+
+                  <div className=" absolute right-0 top-0  bg-red-600 rounded-full w-6 h-6 text-center items-center">
+                    {cartNavRefresh.length}
+                  </div>
+                </div>
               ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+                <div className="relative p-1 animate-bounce">
+                  <Icon path={mdiCartArrowDown} size={1.5} className="mr-2" />
+                  <div className=" absolute right-0 top-0  bg-red-600 rounded-full w-6 h-6 text-center items-center">
+                    {cartNavRefresh.length}
+                  </div>
+                </div>
               )}
-            </IconButton>
-          </div>
+            </Link>
+          </>
+
+          {localStorage.auth ? (
+            <>
+              <ProfileMenu />
+            </>
+          ) : (
+            <>
+              <Link to="login">
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  className="hidden lg:inline-block"
+                >
+                  <span>login</span>
+                </Button>
+              </Link>
+            </>
+          )}
+          <IconButton
+            variant="text"
+            className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+            ripple={false}
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </IconButton>
         </div>
-        <Collapse open={openNav}>
-          {navList}
-          <Button onClick={() => setOpenNav(false)}
-          variant="gradient" size="sm" fullWidth className="mb-2">
-            <span>Buy Now</span>
-          </Button>
-        </Collapse>
-      </Navbar>
-     
+      </div>
+      <Collapse open={openNav}>
+        {navList}
+        <Button
+          onClick={() => setOpenNav(false)}
+          variant="gradient"
+          size="sm"
+          fullWidth
+          className="mb-2"
+        >
+          <span>Buy Now</span>
+        </Button>
+      </Collapse>
+    </Navbar>
   );
 }
